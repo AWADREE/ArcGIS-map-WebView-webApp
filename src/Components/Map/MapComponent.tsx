@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
@@ -6,16 +6,15 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
 import Polyline from "@arcgis/core/geometry/Polyline";
 import { useParams } from "react-router-dom";
-import AxiosInstance from "../../api/axiosInstance";
 import axios from "axios";
 
 const MapComponent = () => {
-  const mapDiv = useRef(null);
-  const graphicsLayer = useRef(null);
-  const routeLayer = useRef(null);
-  const viewRef = useRef(null);
+  const mapDiv = useRef<string | HTMLDivElement | undefined>(undefined);
+  const graphicsLayer = useRef<any>(null);
+  const routeLayer = useRef<any>(null);
+  const viewRef = useRef<any>(null);
   const hasInitialized = useRef(false);
-  const [features, setFeatures] = useState([]);
+  const [features, setFeatures] = useState<any>([]);
   let { latlong } = useParams();
 
   const initializeMap = () => {
@@ -51,8 +50,8 @@ const MapComponent = () => {
       featureLayer
         .queryFeatures(query)
         .then((result) => {
-          const latestFeatures = {};
-          result.features.forEach((feature) => {
+          const latestFeatures: any = {};
+          result.features.forEach((feature: any) => {
             const id = feature.attributes.user_id;
             const uid = feature.uid;
             if (!latestFeatures[id] || uid > latestFeatures[id].uid) {
@@ -128,7 +127,10 @@ const MapComponent = () => {
     }
   };
 
-  const getRoute = async (start, end) => {
+  const getRoute = async (
+    start: { long: number; lat: number },
+    end: { long: number; lat: number }
+  ) => {
     const apiKey = "5b3ce3597851110001cf62485957637fb4de40aab06043d6f78f646e";
     const url = "https://api.openrouteservice.org/v2/directions/driving-car";
 
@@ -145,7 +147,7 @@ const MapComponent = () => {
       console.log("Route coordinates:", route);
 
       const polyline = new Polyline({
-        paths: route.map((coord) => [coord[0], coord[1]]),
+        paths: route.map((coord: any) => [coord[0], coord[1]]),
         spatialReference: { wkid: 4326 }, // WGS84
       });
 
@@ -169,7 +171,7 @@ const MapComponent = () => {
     initializeMap();
   }, [latlong]);
 
-  const handleZoomToFeature = (geometry) => {
+  const handleZoomToFeature = (geometry: any) => {
     viewRef.current.goTo({
       target: geometry,
       zoom: 15,
@@ -185,7 +187,7 @@ const MapComponent = () => {
       >
         <p>List of Features:</p>
         <div>
-          {features.map((graphic, index) => (
+          {features.map((graphic: any, index: number) => (
             <div key={index}>
               {/* Assuming 'first_name' and 'last_name' are available attributes */}
               {`${graphic.attributes?.first_name ?? "Start"} ${
