@@ -1,20 +1,15 @@
-import React from 'react'
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+
 import "./index.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import ErrorPage from "./ErrorPage";
-import MapComponent from "./Components/Map/MapComponent";
+import App from "./App";
 
-const router = createBrowserRouter([
-  {
-    path: ":latlong",
-    element: <MapComponent />,
-    // errorElement: <ErrorPage />,
-  },
-]);
+ReactDOM.render(
+  <Router basename="/">
+    <App />
+  </Router>,
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  document.getElementById("root")
 );
+
+//"homepage": "https://AWADREE.github.io/ArcGIS-map-WebView-webApp",

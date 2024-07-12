@@ -9,10 +9,10 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const MapComponent = () => {
-  const mapDiv = useRef<string | HTMLDivElement | undefined>(undefined);
+  const mapDiv = useRef<HTMLDivElement>(null);
   const graphicsLayer = useRef<any>(null);
   const routeLayer = useRef<any>(null);
-  const viewRef = useRef<any>(null);
+  const viewRef = useRef<MapView | null>(null);
   const hasInitialized = useRef(false);
   const [features, setFeatures] = useState<any>([]);
   let { latlong } = useParams();
@@ -26,7 +26,7 @@ const MapComponent = () => {
     });
 
     const view = new MapView({
-      container: mapDiv.current,
+      container: mapDiv.current!,
       map: map,
       center: [31.6744, 30.02], // Coordinates for the New Administrative Capital
       zoom: 12,
@@ -67,7 +67,6 @@ const MapComponent = () => {
   };
 
   const addPins = () => {
-    console.log("calling addPins");
     if (graphicsLayer.current && latlong) {
       // Clear existing graphics
       graphicsLayer.current.removeAll();
@@ -144,7 +143,6 @@ const MapComponent = () => {
       });
 
       const route = response.data.features[0].geometry.coordinates;
-      console.log("Route coordinates:", route);
 
       const polyline = new Polyline({
         paths: route.map((coord: any) => [coord[0], coord[1]]),
@@ -161,7 +159,6 @@ const MapComponent = () => {
       });
 
       routeLayer.current.add(routeGraphic);
-      console.log("Route graphic added:", routeGraphic);
     } catch (error) {
       console.error("Error fetching route:", error);
     }
@@ -169,36 +166,88 @@ const MapComponent = () => {
 
   useEffect(() => {
     initializeMap();
+    // Cleanup function
+    return () => {
+      viewRef.current?.destroy();
+    };
   }, [latlong]);
 
+  // Function to handle zooming to feature
   const handleZoomToFeature = (geometry: any) => {
-    viewRef.current.goTo({
+    viewRef.current?.goTo({
       target: geometry,
       zoom: 15,
     });
   };
 
+  // Function to resize map view on window resize
+  const resizeMapView = () => {
+    if (viewRef.current && mapDiv.current) {
+      const view: any = viewRef.current;
+
+      // Resize the view to fit the container
+      view.container = mapDiv.current;
+      view.resize();
+
+      // Refresh the view to ensure proper rendering
+      view.when(() => {
+        view.refresh();
+      });
+    }
+  };
+
+  useEffect(() => {
+    // Resize map view on initial load and window resize
+    resizeMapView();
+    window.addEventListener("resize", resizeMapView);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener("resize", resizeMapView);
+    };
+  }, []);
+
   return (
-    <div>
-      <div ref={mapDiv} style={{ width: "100%", height: "650px" }}></div>
+    <div
+      style={{
+        position: "relative",
+        height: "100vh",
+        overflow: "hidden",
+        width: "100vw",
+      }}
+    >
       <div
-        className="bg-danger-subtle"
-        style={{ width: "400px", height: "12px" }}
+        ref={mapDiv}
+        style={{ width: "100%", height: "100%", position: "relative" }}
+      ></div>
+      <div
+        style={{
+          position: "absolute",
+          bottom: "30px",
+          left: "0px",
+          zIndex: 10,
+          borderRadius: "3px",
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
-        <p>List of Features:</p>
-        <div>
-          {features.map((graphic: any, index: number) => (
-            <div key={index}>
-              {/* Assuming 'first_name' and 'last_name' are available attributes */}
-              {`${graphic.attributes?.first_name ?? "Start"} ${
-                graphic.attributes?.last_name ?? "End"
-              }`}{" "}
-              <button onClick={() => handleZoomToFeature(graphic.geometry)}>
-                Zoom To
-              </button>
-            </div>
-          ))}
-        </div>
+        {features?.map((graphic: any, index: number) => (
+          <button
+            key={index}
+            style={{
+              fontSize: 12,
+              height: 50,
+              marginLeft: "10%",
+              marginRight: "10%",
+            }}
+            onClick={() => handleZoomToFeature(graphic?.geometry)}
+          >
+            Zoom To {index === 0 ? "Start" : "End"}
+          </button>
+        ))}
       </div>
     </div>
   );

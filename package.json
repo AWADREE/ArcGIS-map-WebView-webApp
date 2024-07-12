@@ -1,7 +1,6 @@
 {
   "name": "mapforviewmap",
   "private": true,
-  "homepage": "https://AWADREE.github.io/ArcGIS-map-WebView-webApp",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
