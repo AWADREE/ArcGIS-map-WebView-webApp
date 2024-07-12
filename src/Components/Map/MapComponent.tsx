@@ -84,8 +84,8 @@ const MapComponent = () => {
           },
           symbol: {
             type: "simple-marker",
-            color: "red",
-            size: "12px",
+            color: "#4285F4",
+            size: "15px",
           },
         });
         graphicsLayer.current.add(startGraphic);
@@ -100,8 +100,8 @@ const MapComponent = () => {
           },
           symbol: {
             type: "simple-marker",
-            color: "red",
-            size: "12px",
+            color: "#4285F4",
+            size: "15px",
           },
         });
         graphicsLayer.current.add(endGraphic);
@@ -153,8 +153,8 @@ const MapComponent = () => {
         geometry: polyline,
         symbol: {
           type: "simple-line",
-          color: "black",
-          width: 3,
+          color: "#374df0",
+          width: 5,
         },
       });
 
@@ -242,6 +242,9 @@ const MapComponent = () => {
               height: 50,
               marginLeft: "10%",
               marginRight: "10%",
+              color: "white",
+              borderRadius: 10,
+              backgroundColor: "#182c25",
             }}
             onClick={() => handleZoomToFeature(graphic?.geometry)}
           >
