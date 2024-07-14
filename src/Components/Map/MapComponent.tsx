@@ -30,6 +30,9 @@ const MapComponent = () => {
       map: map,
       center: [31.6744, 30.02], // Coordinates for the New Administrative Capital
       zoom: 12,
+      ui: {
+        components: ["zoom", "compass"], // Add zoom and compass controls to the map
+      },
     });
 
     view.when(() => {
