@@ -7,7 +7,16 @@ import Graphic from "@arcgis/core/Graphic";
 import Polyline from "@arcgis/core/geometry/Polyline";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
+//------------------------
+import Home from "@arcgis/core/widgets/Home";
+import Fullscreen from "@arcgis/core/widgets/Fullscreen";
+// import Legend from "@arcgis/core/widgets/Legend";
+// import LayerList from "@arcgis/core/widgets/LayerList";
+// import Search from "@arcgis/core/widgets/Search";
+// import BasemapToggle from "@arcgis/core/widgets/BasemapToggle";
+// import ScaleBar from "@arcgis/core/widgets/ScaleBar";
+// import CoordinateConversion from "@arcgis/core/widgets/CoordinateConversion";
+//------------------------
 const MapComponent = () => {
   const mapDiv = useRef<HTMLDivElement>(null);
   const graphicsLayer = useRef<any>(null);
@@ -34,6 +43,28 @@ const MapComponent = () => {
         components: ["zoom", "compass"], // Add zoom and compass controls to the map
       },
     });
+
+    // Add additional controls/widgets
+    const homeWidget = new Home({ view });
+    const fullscreenWidget = new Fullscreen({ view });
+    // const legendWidget = new Legend({ view });
+    // const layerListWidget = new LayerList({ view });
+    // const searchWidget = new Search({ view });
+    // const basemapToggleWidget = new BasemapToggle({
+    //   view,
+    //   nextBasemap: "topo-vector",
+    // });
+    // const scaleBarWidget = new ScaleBar({ view });
+    // const coordinateConversionWidget = new CoordinateConversion({ view });
+
+    view.ui.add(homeWidget, "top-left");
+    view.ui.add(fullscreenWidget, "top-right");
+    // view.ui.add(legendWidget, "bottom-right");
+    // view.ui.add(layerListWidget, "top-right");
+    // view.ui.add(searchWidget, "top-right");
+    // view.ui.add(basemapToggleWidget, "bottom-left");
+    // view.ui.add(scaleBarWidget, "bottom-left");
+    // view.ui.add(coordinateConversionWidget, "bottom-left");
 
     view.when(() => {
       viewRef.current = view;
@@ -247,7 +278,7 @@ const MapComponent = () => {
               marginRight: "10%",
               color: "white",
               borderRadius: 10,
-              backgroundColor: "#182c25",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
             }}
             onClick={() => handleZoomToFeature(graphic?.geometry)}
           >

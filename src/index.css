@@ -73,6 +73,8 @@ button:focus-visible {
   left: 0 !important;
   width: 100px;
   height: 100px;
+  margin-top: 50px !important;
+  margin-left: 10px !important;
 }
 
 .esri-widget--button {
